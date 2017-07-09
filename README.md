@@ -7,16 +7,16 @@
 - 可设定初始滚动加载次数，超过次数将以分页形式显示
 
 ### 参数 options
-|-参数-|-类型-|-默认值-|-说明-|
-|-loading-|-HTMLString-|-'<div class="ScrollLoad-loading">Loading...</div>'-|-加载数据时的提示语-|
-|-threhold-|-Number-|-50-|-滚动条在距离底部多远响应加载，单位为px-|
-|-container-|-Dom/selector-|-document.body-|-监听滚动的元素-|---|
-|-template-|-function/boolean-|-false-|-返回数据后,格式化数据的函数,返回HTMLString，用以添加新加载的内容;如果为假，直接添加数据到页面; 如果为真，外部包裹'<div class="ScrollLoad"></div>'-|
-|-throttle-|-Number-|-50-|-返回数据后，格式化数据的函数，应该返回HTML string，用以添加新加载的内容-|
-|-reload-|-boolean-|-true-|-在数据加载失败后，是否显示重新加载提示语-|
-|-nonStaticData-|-Object-|-{ urls: [], requestType: 'get', dataType: 'data' }-|-需要向服务器请求的数据，数据url放在urls中。请求类型分为get、jsonp。dataType分为data和img。如果为img，将会预加载前一张image-|
-|-staticData-|-Array-|-[]-|-无需向服务器请求的数据。-|
-|-pagination-|-Object-|-{times: 0, pages: 0}-| 是否展示分页。times设置后，将在首页响应times次滚动加载;然后显示pages+1个分页按钮（含首页）。-|
+|参数|类型|默认值|说明|
+|loading|HTMLString|'<div class="ScrollLoad-loading">Loading...</div>'|加载数据时的提示语|
+|threhold|Number|50|滚动条在距离底部多远响应加载，单位为px|
+|container|Dom/selector|document.body|监听滚动的元素|-|
+|template|function/boolean|false|返回数据后,格式化数据的函数,返回HTMLString，用以添加新加载的内容;如果为假，直接添加数据到页面; 如果为真，外部包裹'<div class="ScrollLoad"></div>'|
+|throttle|Number|50|返回数据后，格式化数据的函数，应该返回HTML string，用以添加新加载的内容|
+|reload|boolean|true|在数据加载失败后，是否显示重新加载提示语|
+|nonStaticData|Object|{ urls: [], requestType: 'get', dataType: 'data' }|需要向服务器请求的数据，数据url放在urls中。请求类型分为get、jsonp。dataType分为data和img。如果为img，将会预加载前一张image|
+|staticData|Array|[]|无需向服务器请求的数据。|
+|pagination|Object|{times: 0, pages: 0}| 是否展示分页。times设置后，将在首页响应times次滚动加载;然后显示pages+1个分页按钮（含首页）。|
 
 ### 其他可用接口
 ```
