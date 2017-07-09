@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>scrollLoad</title>
+    <style>
+        .ScrollLoad-loading {
+            width: 100%;
+            min-height: 30px;
+            color: white;
+            background: steelblue;
+        }
+        .js-modal-rule {
+            width: 500px;
+            height: 400px;
+            border: 1px solid blue;
+            overflow: scroll;
+        }
+        .ScrollLoad-reload {
+            width: 50px;
+            height: 40px;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+        .ScrollLoad-pageId {
+            list-style: none;
+            display: inline-block;
+            border: 1px solid black;
+            border-radius: 5px;
+            width: 30px;
+            height: 30px;
+            text-align: center;
+            line-height: 30px;
+            font-size: 18px;
+            margin: 10px;
+        }
+        .ScrollLoad-pageId.current {
+            background-color: steelblue;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <p class='js-modal-rule'>
+        filter 为数组中的每个元素调用一次 callback 函数，并利用所有使得 callback 返回 true 或 等价于 true 的值 的元素创建一个新数组。callback 只会在已经赋值的索引上被调用，对于那些已经被删除或者从未被赋值的索引不会被调用。那些没有通过 callback 测试的元素会被跳过，不会被包含在新数组中filter 为数组中的每个元素调用一次 callback 函数，并利用所有使得 callback 返回 true 或 等价于 true 的值 的元素创建一个新数组。callback 只会在已经赋值的索引上被调用，对于那些已经被删除或者从未被赋值的索引不会被调用。那些没有通过 callback 测试的元素会被跳过，不会被包含在新数组中filter 为数组中的每个元素调用一次 callback 函数，并利用所有使得 callback 返回 true 或 等价于 true 的值 的元素创建一个新数组。callback 只会在已经赋值的索引上被调用，对于那些已经被删除或者从未被赋值的索引不会被调用。那些没有通过 callback 测试的元素会被跳过，不会被包含在新数组中.filter 为数组中的每个元素调用一次 callback 函数，并利用所有使得 callback 返回 true 或 等价于 true 的值 的元素创建一个新数组。callback 只会在已经赋值的索引上被调用，对于那些已经被删除或者从未被赋值的索引不会被调用。那些没有通过 callback 测试的元素会被跳过，不会被包含在新数组中filter 为数组中的每个元素调用一次 callback 函数，并利用所有使得 callback 返回 true 或 等价于 true 的值 的元素创建一个新数组。callback 只会在已经赋值的索引上被调用，对于那些已经被删除或者从未被赋值的索引不会被调用。那些没有通过 callback 测试的元素会被跳过，不会被包含在新数组中filter 为数组中的每个元素调用一次 callback 函数，并利用所有使得 callback 返回 true 或 等价于 true 的值 的元素创建一个新数组。callback 只会在已经赋值的索引上被调用，对于那些已经被删除或者从未被赋值的索引不会被调用。那些没有通过 callback 测试的元素会被跳过，不会被包含在新数组中.
+    </p>
+    <script type="text/javascript" src='scrollLoad.js'></script>
+    <script type="text/javascript">
+        var urls = [];
+        urls = [
+            'https://api.douban.com/v2/book/4847298',//4866934
+            'https://api.douban.com/v2/book/4866949',
+            'https://api.douban.com/v2/book/4866440',
+
+            'https://api.douban.com/v2/book/4866931',
+            'https://api.douban.com/v2/book/4847292',//4866934
+            'https://api.douban.com/v2/book/4866943',
+            'https://api.douban.com/v2/book/4866444',
+            'https://api.douban.com/v2/book/4866935',
+            'https://api.douban.com/v2/book/4847296',//4866934
+            'https://api.douban.com/v2/book/4866947',
+            'https://api.douban.com/v2/book/4866448',
+
+            'https://api.douban.com/v2/book/4866939',
+            'https://api.douban.com/v2/book/4266938',
+            'https://api.douban.com/v2/book/4366928',
+            'https://api.douban.com/v2/book/4866444',
+            'https://api.douban.com/v2/book/4547228',//4866934
+            'https://api.douban.com/v2/book/4666938',
+            'https://api.douban.com/v2/book/4766938',
+            'https://api.douban.com/v2/book/4866938',
+
+            'https://api.douban.com/v2/book/4947228',//4866934
+            'https://api.douban.com/v2/book/4066938',
+            'https://api.douban.com/v2/book/4816452',
+            'https://api.douban.com/v2/book/4826964',
+            'https://api.douban.com/v2/book/4837228',//4866934
+            'https://api.douban.com/v2/book/4846938',
+            'https://api.douban.com/v2/book/4856459',
+            'https://api.douban.com/v2/book/4876964',
+            'https://api.douban.com/v2/book/4876969',
+        ];
+
+        var scroll = new ScrollLoad({
+            threhold: 60,
+            container: document.querySelector('.js-modal-rule'),
+            template: function(datas) {
+                datas = JSON.parse(JSON.stringify(datas));
+                let str = '<ul>';
+                str += '<li>' + datas.title + '</li>';
+                str += '<li>' + '-------分割-------' + '</li>';
+                str += '</ul>';
+                return str;
+            },
+            nonStaticData: {
+                urls: urls,
+                requestType: 'jsonp',
+                dataType: 'data',
+                reload: true,
+            },
+            // staticData: urls,
+            pagination: {
+                times: 3,
+                pages: 4
+            },
+            callback: function(data) {
+                console.log(data.status);
+            }
+        });
+    </script>
+</body>
+</html>
