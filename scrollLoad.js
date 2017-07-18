@@ -229,67 +229,35 @@
                 this.changeContainerDom(this.paginationDoms[currentPage]);
                 return;
             }
-            if (dataForScroll.urls) {
-                if (currentPage === 0) {
-                    if (current === dataForScroll.urls.length) {
-                        this.showPaginationDom();
-                        this.changeStatus('currentPage', currentPage+1);
-                        this.changeStatus('nowLoad', 0);
-                        return;
-                    }
-                    this.loadDataFromServer(dataForScroll, callback);
-                } else {
-                    this.changeContainerDom();
+            let loadData = (dataForScroll.urls ? this.loadDataFromServer : this.loadDataFromLocal).bind(this);
+            if (currentPage === 0) {
+                if ((dataForScroll.urls && current === dataForScroll.urls.length) || current === dataForScroll.length) {
+                    this.showPaginationDom();
+                    this.changeStatus('currentPage', currentPage+1);
                     this.changeStatus('nowLoad', 0);
-                    let i = 0;
-                    let len = formateResult[currentPage-1].urls.length;
-                    var recursion = () => {
-                        // loadDataFromServer有异步更改current，用for循环会导致current与循环的i不能对应。改用递归。
-                        this.loadDataFromServer(formateResult[currentPage-1], () => {
-                            callback[arguments[0]];
-                            if (i == (len -1)) {
-                                this.options.container.scrollTop = 0;
-                                this.showPaginationDom();
-                                return;
-                            } else {
-                                i++;
-                                recursion();
-                            }
-                        });
-                    };
-                    recursion();
-                    // for (let i = 0, len = formateResult[currentPage-1].urls.length; i < len; i++) {
-                    //     this.loadDataFromServer(formateResult[currentPage-1], () => {
-                    //         callback(arguments[0]);
-                    //         if (i === (len-1)) {
-                    //             this.options.container.scrollTop = 0;
-                    //             this.showPaginationDom();
-                    //         }
-                    //     });
-                    // }
+                    return;
                 }
+                loadData(dataForScroll, callback);
             } else {
-                if (currentPage === 0) {
-                    if (current === dataForScroll.length) {
-                        this.showPaginationDom();
-                        this.changeStatus('currentPage', currentPage+1);
-                        this.changeStatus('nowLoad', 0);
-                        return;
-                    }
-                    this.loadDataFromLocal(dataForScroll, callback);
-                } else {
-                    this.changeContainerDom();
-                    this.changeStatus('nowLoad', 0);
-                    for (let i = 0, len = formateResult[currentPage-1].length; i < len; i++) {
-                        this.loadDataFromLocal(formateResult[currentPage-1], () => {
-                            callback(arguments[0]);
-                            if (i === (len-1)) {
-                                this.options.container.scrollTop = 0;
-                                this.showPaginationDom();
-                            }
-                        });
-                    }
-                }
+                this.changeContainerDom();
+                this.changeStatus('nowLoad', 0);
+                let i = 0;
+                let len = dataForScroll.urls ? formateResult[currentPage-1].urls.length : formateResult[currentPage-1].length;
+                var recursion = () => {
+                    // loadDataFromServer有异步更改current，用for循环会导致current与循环的i不能对应。改用递归。
+                    loadData(formateResult[currentPage-1], () => {
+                        callback[arguments[0]];
+                        if (i == (len -1)) {
+                            this.options.container.scrollTop = 0;
+                            this.showPaginationDom();
+                            return;
+                        } else {
+                            i++;
+                            recursion();
+                        }
+                    });
+                };
+                recursion();
             }
         }
 
@@ -313,9 +281,7 @@
                 dataForPagination = staticData.slice(allowScrollTimes);
             }
 
-            dataLengthPerPage = dataForPagination.length % pages === 0
-                ? dataForPagination.length / pages
-                : dataForPagination.length / pages + 1;
+            dataLengthPerPage = Math.ceil(dataForPagination.length / pages);
             while (formateResult.length !==  pages) {
                 let start = formateResult.length * dataLengthPerPage,
                     end = (formateResult.length+1) * dataLengthPerPage;

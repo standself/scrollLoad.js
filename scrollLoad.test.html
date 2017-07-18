@@ -88,18 +88,18 @@
             template: function(datas) {
                 datas = JSON.parse(JSON.stringify(datas));
                 let str = '<ul>';
-                str += '<li>' + datas.title + '</li>';
+                str += '<li>' + datas + '</li>';
                 str += '<li>' + '-------分割-------' + '</li>';
                 str += '</ul>';
                 return str;
             },
-            nonStaticData: {
-                urls: urls,
-                requestType: 'jsonp',
-                dataType: 'data',
-                reload: true,
-            },
-            // staticData: urls,
+            reload: true,
+            // nonStaticData: {
+            //     urls: urls,
+            //     requestType: 'jsonp',
+            //     dataType: 'data',
+            // },
+            staticData: urls,
             pagination: {
                 times: 3,
                 pages: 4
