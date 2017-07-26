@@ -86,20 +86,20 @@
             threhold: 60,
             container: document.querySelector('.js-modal-rule'),
             template: function(datas) {
-                datas = JSON.parse(JSON.stringify(datas));
+                // datas = JSON.parse(JSON.stringify(datas));
                 let str = '<ul>';
-                str += '<li>' + datas + '</li>';
+                str += '<li>' + datas.title + '</li>';
                 str += '<li>' + '-------分割-------' + '</li>';
                 str += '</ul>';
                 return str;
             },
             reload: true,
-            // nonStaticData: {
-            //     urls: urls,
-            //     requestType: 'jsonp',
-            //     dataType: 'data',
-            // },
-            staticData: urls,
+            nonStaticData: {
+                urls: urls,
+                requestType: 'jsonp',
+                dataType: 'data',
+            },
+            // staticData: urls,
             pagination: {
                 times: 3,
                 pages: 4

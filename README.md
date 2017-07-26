@@ -36,7 +36,7 @@ scroll.preloadImg(url, callback = function () {}, trigger = true)
 ```
 
 ### 使用 usage
-[demo](http://standself.github.io/scrollLoad.js/scrollLoad.test.html)
+[demo](http://standself.github.io/scrollLoad.js/scrollLoad.tests.html)
 
 ```
 var urls = [];

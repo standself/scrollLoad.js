@@ -27,12 +27,13 @@
                 container: doc.body,
                 template: false,
                 throttle: 50,
+                reload: true,
+                reloading: `加载失败，<span class="ScrollLoad-reload">重新加载</span>`,
                 nonStaticData: {
                     urls: [],
                     requestType: 'get',// jsonp
                     dataType: 'data',// img
                 },
-                reload: true,
                 staticData: [],
                 pagination: {
                     times: 0,
@@ -55,7 +56,9 @@
 
         init () {
             // 加载的数据类型是图片时，预加载首张图片
-            if (this.options.nonStaticData.dataType == 'img' && this.options.nonStaticData.urls.length > 0) this.preloadImg(this.options.nonStaticData.urls[0]);
+            if (this.options.nonStaticData.dataType == 'img' && this.options.nonStaticData.urls.length > 0) {
+                this.preloadImg(this.options.nonStaticData.urls[0]);
+            }
             if (this.options.pagination.pages) {
                 this.paginationData = this.formateDataForPagination(this.options.nonStaticData, this.options.staticData);
             }
@@ -63,10 +66,10 @@
             this.bindEvent();
         }
 
-        changeStatus(key, value) {
+        changeStatus (key, value) {
             this.status[key] = value;
         }
-        getStatus(key) {
+        getStatus (key) {
             return this.status[key];
         }
 
@@ -77,12 +80,14 @@
             this.$loading = this.options.container.querySelector('.ScrollLoad-loading');
         }
         hideLoadingDom () {
-            if (this.$loading) this.options.container.removeChild(this.$loading);
+            if (this.$loading) {
+                this.options.container.removeChild(this.$loading);
+            }
         }
 
         showErrorDom () {
             this.$loading.innerHTML = this.options.reload
-                    ? '数据加载失败, <span class="ScrollLoad-reload">重新加载</span>'
+                    ? this.options.reloading
                     : '数据加载失败';
             this.$reload = this.$loading.querySelector('.ScrollLoad-reload');
             this.$reload && (this.$reload.onclick = () => {
@@ -169,7 +174,7 @@
             let requestType = nonStaticData.requestType;
             let dataType = nonStaticData.dataType;
             let current = this.getStatus('nowLoad');
-            if (nonStaticData.urls.length === 0 || current == nonStaticData.urls.length) {
+            if (nonStaticData.urls.length === 0 || current === nonStaticData.urls.length) {
                return;
             }
             this.showLoadingDom();
@@ -205,7 +210,6 @@
                     this.createNewDom(data);
                     this.changeStatus('nowLoad', (current+1));
                     (typeof callback === 'function') && callback(data);
-                    doc.querySelector('head').removeChild(script);
                 }, () => {
                     this.showErrorDom();
                 });
@@ -242,7 +246,9 @@
                 this.changeContainerDom();
                 this.changeStatus('nowLoad', 0);
                 let i = 0;
-                let len = dataForScroll.urls ? formateResult[currentPage-1].urls.length : formateResult[currentPage-1].length;
+                let len = dataForScroll.urls 
+                    ? formateResult[currentPage-1].urls.length
+                    : formateResult[currentPage-1].length;
                 var recursion = () => {
                     // loadDataFromServer有异步更改current，用for循环会导致current与循环的i不能对应。改用递归。
                     loadData(formateResult[currentPage-1], () => {
@@ -285,8 +291,9 @@
             while (formateResult.length !==  pages) {
                 let start = formateResult.length * dataLengthPerPage,
                     end = (formateResult.length+1) * dataLengthPerPage;
-                let temp = dataForScroll.urls && dataForScroll.urls.length > 0 ?
-                    {   urls: dataForPagination.slice(start, end),
+                let temp = dataForScroll.urls && dataForScroll.urls.length > 0
+                    ? { 
+                        urls: dataForPagination.slice(start, end),
                         requestType: dataForScroll.requestType,
                         dataType: dataForScroll.dataType
                     } : dataForPagination.slice(start, end);
@@ -304,9 +311,6 @@
             xhr.onreadystatechange = () => {
                 if (xhr.readyState === 4 && xhr.status === 200) {
                     success(xhr.responseText);
-                    // this.changeStatus('nowLoad', (current+1));
-                    // this.createNewDom(xhr.responseText);
-                    // typeof callback == 'function' && callback(xhr.responseText);
                 }
             };
             xhr.timeout = 10000;
@@ -325,7 +329,10 @@
             script.src = url + '?callback=' + callbackName;
             script.setAttribute('type', 'text/javascript');
             script.onerror = error;
-            win[callbackName] = success;
+            win[callbackName] = (data) => {
+                success.call(this, data);
+                doc.querySelector('head').removeChild(script);
+            }
             doc.querySelector('head').appendChild(script);
             return script;
         }
@@ -350,7 +357,7 @@
                     images.push(img);
                 }
                 img.onerror = (event) => {
-                    // callback(event);
+                    if (trigger) callback(event);
                     this.changeStatus('preloadImg', []);
                 }
             });
